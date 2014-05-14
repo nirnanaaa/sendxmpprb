@@ -13,6 +13,7 @@ module Sendxmpp
   #   ...
   #
   class CLI < Thor
+    include Config
 
     class_option :server, default: "", type: :string, aliases: "-s", required: false
     class_option :port, default: 5222, type: :numeric, aliases: "-p", required: false
@@ -25,9 +26,6 @@ module Sendxmpp
     class_option :config, default: "#{ENV['HOME']}/.sendxmpprbrc", type: :string, aliases: "-c", required: false
     class_option :logfile, default: nil, aliases: '-l', required: false
 
-    # Public: configuration options
-    attr_reader :config
-
     # Public: logger
     attr_reader :log
 
@@ -39,16 +37,17 @@ module Sendxmpp
     def initialize(*args)
       super
       if File.exists?(options[:config])
-        @config = IniFile.load(options[:config])["sendxmpp"]
+        conf = IniFile.load(options[:config])["sendxmpp"]
         local_conf = options.dup
-        @config.merge!(local_conf)
+        conf.merge!(local_conf)
+        update_config(conf)
       end
-      if config["logfile"]
-        @log = Logger.new(config["logfile"])
+      if config.logfile
+        @log = Logger.new(config.logfile)
       else
         @log = Logger.new(STDOUT)
       end
-      log.level = config["loglevel"].to_i || 2
+      log.level = config.loglevel.to_i || 2
       log.debug("finished loading configuration.")
       $stdout.sync = true
     end
