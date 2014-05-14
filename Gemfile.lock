@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sendxmpp (0.0.1)
+    sendxmpp (0.0.3)
       hashr
       inifile (~> 2.0)
       thor (~> 0.19, >= 0.19.1)
@@ -17,6 +17,7 @@ GEM
     xmpp4r (0.5.6)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES

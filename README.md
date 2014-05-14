@@ -28,11 +28,10 @@ sendxmpprb user mosny@examplejabber.org -j from@example.com --password password 
 
 * MRI on OsX
 * MRI on Linux
-* JRuby on OsX
 
 ### Supported Ruby versions
 
-The following Ruby versions are supported:
+The following MRI(Ruby) versions are supported:
 
 * 1.9.1
 * 1.9.2
