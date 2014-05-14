@@ -48,12 +48,6 @@ module Sendxmpp
       update_config(conf)
       end
 
-      if !config.message
-        while $stdin.gets
-          config.message ||= ""
-          config.message << $_
-        end
-      end
       Log.logger.debug("finished loading configuration.")
       $stdout.sync = true
     end
@@ -72,6 +66,7 @@ module Sendxmpp
     # Returns 0 or 1 exit codes
     def user(*jids)
       Log.logger.debug("Received call for user method")
+      fetch_stdin
       unless jids.kind_of?(Array)
         Log.logger.error("Throwing ArgumentError because Jids is not an array.")
         raise ArgumentError, "Jids needs to be an Array got #{jids.class}"
@@ -103,6 +98,7 @@ module Sendxmpp
     # Returns 0 or 1 exit codes
     def chat(*jids)
       Log.logger.debug("Received call for chat method")
+      fetch_stdin
       unless jids.kind_of?(Array)
         Log.logger.error("Throwing ArgumentError because Jids is not an array.")
         raise ArgumentError, "Jids needs to be an Array got #{jids.class}"
@@ -120,6 +116,17 @@ module Sendxmpp
         end
       end
 
+    end
+    no_commands do
+      def fetch_stdin
+        if !config.message
+          Log.logger.info("messages empty. using stdin")
+          while $stdin.gets
+            config.message ||= ""
+            config.message << $_
+          end
+        end
+      end
     end
 
   end
