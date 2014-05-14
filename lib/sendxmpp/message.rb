@@ -28,24 +28,26 @@ module Sendxmpp
     def initialize
       @batch=false
       if config.jid.nil? || config.jid.empty?
-        raise ArgumentError, <<-RAISE
-        \rJID is not configured. Please use the configuration file or specify the
-        \r-j option.
-        RAISE
+        Log.logger.error("JID is not defined.")
+        Log.logger.error("Please use the -j option or the directive jid=... in .sendxmpprbrc")
+        exit 1
       end
-
       jid = JID.new(config.jid)
       Log.logger.debug("Initializing a new Jabber client instance.")
       self.client = Client.new(jid)
       Log.logger.debug("Initialized a new Jabber client instance.")
-
       Log.logger.debug("Connecting to Jabber server.")
       client.connect(config.server, config.port)
       Log.logger.debug("Connected to Jabber server.")
-
       Log.logger.debug("Authenticating with Jabber server.")
       client.auth(config.password)
       Log.logger.debug("Authenticating with Jabber server.")
+    rescue Jabber::ClientAuthenticationFailure => e
+      Log.logger.error("Authentication error for jid %s" % config.jid)
+      exit 1
+    rescue SocketError => e
+      Log.logger.error("There was an error connecting to the server: %s" % e.message)
+      exit 1
     end
 
     # Public: Singleton object getter
@@ -116,7 +118,8 @@ module Sendxmpp
     def process_batch(&block)
       Log.logger.info("Batch procession started.")
       unless block_given?
-        raise ArgumentError, "Do not use this function without a block"
+        Log.logger.error("Please specify a block to use this function.")
+        exit 1
       end
       @batch=true
       yield

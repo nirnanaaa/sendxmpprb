@@ -14,7 +14,7 @@ module Sendxmpp
       else
         super(STDOUT)
       end
-      self.level = config.loglevel.to_i || 2
+      self.level = (config.loglevel.nil?) ? WARN : config.loglevel.to_i
     end
   end
 end

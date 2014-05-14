@@ -23,7 +23,7 @@ module Sendxmpp
     class_option :resource, default: "Sendxmpp", type: :string, required: false
     class_option :password, default: "", type: :string, required: false
     class_option :message, default: "", type: :string, aliases: '-m', required: false
-    class_option :jid, default: "", type: :string, required: false
+    class_option :jid, default: "", type: :string, required: false, aliases: '-j'
     class_option :config, default: "#{ENV['HOME']}/.sendxmpprbrc", type: :string, aliases: "-c", required: false
     class_option :logfile, default: nil, aliases: '-l', required: false
 
@@ -38,15 +38,16 @@ module Sendxmpp
     # Raises ArgumentError if the main hash key was not found
     def initialize(*args)
       super
+      local_conf = options.dup
+      local_conf.delete_if{|k,v|v.nil?||(v.kind_of?(String) && v.empty?)}
+      update_config(local_conf)
       if File.exists?(options[:config])
         conf = IniFile.load(options[:config])["sendxmpp"]
         if conf.nil? || conf.empty?
           raise ArgumentError, "No [sendxmpp] section in ini file found!"
         end
-        local_conf = options.dup
-        local_conf.delete_if{|k,v|v.nil?||(v.kind_of?(String) && v.empty?)}
-        conf.merge!(local_conf)
-        update_config(conf)
+      conf.merge!(local_conf)
+      update_config(conf)
       end
       Log.logger.debug("finished loading configuration.")
       $stdout.sync = true
