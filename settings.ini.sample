@@ -2,7 +2,7 @@
 
 # The JID of the sending user
 # Default: ""
-jid=mosny3212@jabber.org
+jid=bla@jabberdomain.example.com
 
 # The Password of the sending user
 # Default: ""
@@ -39,4 +39,4 @@ jid=mosny3212@jabber.org
 #   info  - 1
 #   debug - 0
 # Default: 2
-loglevel = 0
+loglevel = 2

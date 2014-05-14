@@ -1,3 +1,4 @@
 *.gem
 local/
+settings.ini
 Makefile
