@@ -27,8 +27,6 @@ module Sendxmpp
     class_option :config, default: "#{ENV['HOME']}/.sendxmpprbrc", type: :string, aliases: "-c", required: false
     class_option :logfile, default: nil, aliases: '-l', required: false
 
-    # Public: logger
-    attr_reader :log
 
     # Public: Initialize a new Object from CLI
     #
@@ -48,6 +46,13 @@ module Sendxmpp
         end
       conf.merge!(local_conf)
       update_config(conf)
+      end
+
+      if !config.message
+        while $stdin.gets
+          config.message ||= ""
+          config.message << $_
+        end
       end
       Log.logger.debug("finished loading configuration.")
       $stdout.sync = true
@@ -72,7 +77,7 @@ module Sendxmpp
         raise ArgumentError, "Jids needs to be an Array got #{jids.class}"
       end
 
-      if options.message.empty?
+      if config.message.empty?
         Log.logger.error("No message to send. Exiting.")
         Log.logger.error("See https://github.com/nirnanaaa/sendxmpprb/wiki/Sending-messages for available message formats.")
         exit 1
@@ -103,7 +108,7 @@ module Sendxmpp
         raise ArgumentError, "Jids needs to be an Array got #{jids.class}"
       end
 
-      if options.message.empty?
+      if config.message.empty?
         Log.logger.error("No message to send. Exiting.")
         Log.logger.error("See https://github.com/nirnanaaa/sendxmpprb/wiki/Sending-messages for available message formats.")
         exit 1
