@@ -3,9 +3,6 @@ require 'thor'
 module Sendxmpp
   class CLI < Thor
 
-    def initialize
-    end
-
     desc "user [USER1],[USER2],...", "send a message to jabber users"
     # Public: Send a message to multiple users.
     #         Message will be sent to each user seperately
