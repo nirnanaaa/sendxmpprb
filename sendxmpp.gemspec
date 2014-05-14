@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Sendxmpp::VERSION
   s.authors     = ["Florian Kasper"]
   s.email       = ["florian.kasper@corscience.de"]
-  s.homepage    = "http://git.er.corscience.de"
+  s.homepage    = "https://github.com/nirnanaaa/sendxmpprb"
   s.summary     = %q{Send messages from the console to a XMPP server}
   s.description = %q{Send messages from the console to a XMPP server}
 
