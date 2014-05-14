@@ -8,11 +8,11 @@ Gem::Specification.new do |s|
   s.authors     = ["Florian Kasper"]
   s.email       = ["florian.kasper@corscience.de"]
   s.homepage    = "http://git.er.corscience.de"
-  s.summary     = %q{TODO Update Summary}
-  s.description = %q{TODO Update Description}
+  s.summary     = %q{Send messages from the console to a XMPP server}
+  s.description = %q{Send messages from the console to a XMPP server}
 
-  s.rubyforge_project = "none"
-  s.license = "PROPRIETARY"
+  s.rubyforge_project = "sendxmpp"
+  s.license = "MIT"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
@@ -21,10 +21,8 @@ Gem::Specification.new do |s|
 
 
   s.add_runtime_dependency "thor", "~> 0.19", '>= 0.19.1'
-  s.add_runtime_dependency "net-ssh", "~> 2.9"
-  s.add_runtime_dependency "net-scp", "~> 1.1"
-  s.add_runtime_dependency "json", "~> 1.8"
   s.add_runtime_dependency "inifile", "~> 2.0"
+  s.add_runtime_dependency "xmpp4r", "~> 0.5"
 
   s.add_development_dependency "rake", "~> 10.1"
 end
