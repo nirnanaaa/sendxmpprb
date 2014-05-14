@@ -9,7 +9,20 @@ Please read the wiki article [Usage](https://github.com/nirnanaaa/sendxmpprb/wik
 
 #### Sending messages via a pipe
 
+```zsh
+echo "Message from $HOST" |sendxmpprb user mosny@examplejabber.org -j from@example.com --password password
+```
 
+#### Sending whole files over xmpp
+
+```zsh
+sendxmpprb user mosny@examplejabber.org -j from@example.com --password password < /var/log/syslog
+```
+
+#### Sending messages via the `-m` option
+```zsh
+sendxmpprb user mosny@examplejabber.org -j from@example.com --password password -m "Message from $HOST"
+```
 
 ### Supported Plaforms
 
