@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "thor", "~> 0.19", '>= 0.19.1'
   s.add_runtime_dependency "inifile", "~> 2.0"
   s.add_runtime_dependency "xmpp4r", "~> 0.5"
+  s.add_dependency "hashr"
 
   s.add_development_dependency "rake", "~> 10.1"
 end

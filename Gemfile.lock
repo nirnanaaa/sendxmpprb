@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     sendxmpp (0.0.1)
+      hashr
       inifile (~> 2.0)
       thor (~> 0.19, >= 0.19.1)
       xmpp4r (~> 0.5)
@@ -9,6 +10,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    hashr (0.0.22)
     inifile (2.0.2)
     rake (10.3.1)
     thor (0.19.1)
