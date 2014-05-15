@@ -23,9 +23,9 @@ jid=bla@jabberdomain.example.com
 # Default receipients. This is used if you do not want to specify them via commandline
 # Default: nil
 # Comma seperated list of receipients
-# receipients=muc:muc@jabber.org:password,\
-# user:bla@jabberdomain.example.com,\
-# muc:muc2@conference.example.com
+# receipients=muc->muc@jabber.org:password,\
+# user->bla@jabberdomain.example.com,\
+# muc->muc2@conference.example.com
 
 # Server to send messages over. If no server is provided DNS SRV record from jid will be used
 # Default: ""
