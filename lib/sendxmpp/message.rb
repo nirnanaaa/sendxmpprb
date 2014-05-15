@@ -156,6 +156,9 @@ module Sendxmpp
         Log.logger.info("Joined room %s" % room)
       end
       muc.send m
+    rescue Jabber::ServerError => e
+      Log.logger.error("There was an error sending this message to room %s:" % room)
+      Log.logger.error(e.message)
     end
 
     # Public: Send the batch out
