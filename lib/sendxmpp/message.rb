@@ -102,10 +102,10 @@ module Sendxmpp
         receipients << options
       else
         if options[:type] == :user
-          send_message(config.message, options[:user])
+          send_message(options[:user])
         else
           group, password = split_password(options[:user])
-          send_muc_message(config.message, group, password)
+          send_muc_message(group, password)
         end
       end
     end
