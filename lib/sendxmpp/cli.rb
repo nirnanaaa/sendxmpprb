@@ -26,6 +26,7 @@ module Sendxmpp
     class_option :jid, default: "", type: :string, required: false, aliases: '-j'
     class_option :config, default: "#{ENV['HOME']}/.sendxmpprbrc", type: :string, aliases: "-c", required: false
     class_option :logfile, default: nil, aliases: '-l', required: false
+    class_option :subject, default: nil, type: :string, required: false
 
 
     # Public: Initialize a new Object from CLI
@@ -59,9 +60,13 @@ module Sendxmpp
     # jids - Receipient(s) can be one or more
     #
     # Examples
+    #
+    #   sendxmpp user mosny@jabber.org -m "test"
+    #   echo "test" | sendxmpp user mosny@jabber.org
+    #   sendxmpp user mosny@jabber.org < /var/log/system.log
+    #
     #   user(["mosny@jabber.org"])
     #   user(["mosny@jabber.org", "someone@jabber.org"])
-    #   ...
     #
     # Returns 0 or 1 exit codes
     def user(*jids)
@@ -88,6 +93,11 @@ module Sendxmpp
     # jids - Array of MUC(Multi user chat) jids.
     #
     # Examples
+    #
+    #   sendxmpp chat edv@conference.jabber.org -m "test"
+    #   echo "test" | sendxmpp chat edv@conference.jabber.org:password
+    #   sendxmpp chat edv@conference.jabber.org < /var/log/system.log
+    #
     #   chat(["edv@conference.jabber.org"])
     #   chat(["edv@conference.jabber.org", "staff@conference.jabber.org"])
     #
@@ -113,6 +123,12 @@ module Sendxmpp
     desc "fromconf", "Read the receipients from configuration file"
     # Public: Will read the receipients from configuration file and send the message to the users
     #
+    # Examples
+    #   sendxmpp fromconf -m "test"
+    #   echo "test" |sendxmpp fromconf
+    #   sendxmpp fromconf < /var/log/system.log
+    #
+    # Returns an exit code 0 or 1
     def fromconf
       Log.logger.debug("Received call for fromconf method")
       if !config.receipients
@@ -122,7 +138,6 @@ module Sendxmpp
       end
       fetch_stdin
       check_messagequeue
-
       users, muc = parse_receipients
       Message.batch do 
         users.each do |jid|
@@ -149,6 +164,8 @@ module Sendxmpp
       end
 
       # Public: read receipients from configuration
+      #
+      # Returns an array of types
       def parse_receipients
         types = [[],[]]
         config.receipients.split(",").each do |r|
@@ -160,10 +177,14 @@ module Sendxmpp
 
       # Public: Fetch stdin input
       #
+      # Before reading, stdin will be checked for presence.
+      #
+      # THIS METHOD ONLY WORKS ON UNIX BASED SYSTEMS, AS FCNTL
+      # IS NOT AVAILABLE ON WINDOWS
+      #
       # Returns nothing
       def fetch_stdin
         require 'fcntl'
-
         if !config.message
           Log.logger.info("messages empty. using stdin")
           if STDIN.fcntl(Fcntl::F_GETFL, 0) == 0
