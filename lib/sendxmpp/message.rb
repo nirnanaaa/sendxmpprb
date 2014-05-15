@@ -134,7 +134,7 @@ module Sendxmpp
     # Returns nothing
     def send_message(user)
       Log.logger.debug("sending message to user %s" % user)
-      m = Jabber::Message.new(user, config.message)
+      m = Jabber::Message.new(user, generate_message)
       client.send(m)
       Log.logger.debug("sent message")
     end
@@ -148,7 +148,7 @@ module Sendxmpp
     def send_muc_message(room, password=nil)
       Log.logger.debug("including file xmpp4r/muc")
       require 'xmpp4r/muc'
-      m = Jabber::Message.new(room, config.message)
+      m = Jabber::Message.new(room, generate_message)
       muc = MUC::MUCClient.new(client)
       if !muc.active?
         Log.logger.info("Joining room %s" % room)
@@ -170,6 +170,27 @@ module Sendxmpp
         Log.logger.debug("Removing item %p from queue" % rcpt)
         receipients.delete(rcpt)
       end
+    end
+
+    private
+
+    # Private: Generates a message for sending. Combines subject and message
+    #
+    # Returns the message string
+    def generate_message
+      if config.subject
+        msg = ""
+        msg << "\n"
+        msg << "-----------------------------------------\n"
+        msg << "New Message:\n"
+        msg << "%s\n" % config.subject
+        msg << config.message
+        msg << "\n-----------------------------------------\n"
+        msg
+      else
+        config.message
+      end
+
     end
   end
 end
