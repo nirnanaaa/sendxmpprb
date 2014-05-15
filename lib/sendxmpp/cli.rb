@@ -115,6 +115,11 @@ module Sendxmpp
     #
     def fromconf
       Log.logger.debug("Received call for fromconf method")
+      if !config.receipients
+        Log.logger.error("No receipient(s) specified.")
+        Log.logger.error("Please read https://github.com/nirnanaaa/sendxmpprb/wiki/Configuration on how to specify receipients.")
+        exit 1
+      end
       fetch_stdin
       check_messagequeue
 
