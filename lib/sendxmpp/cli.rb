@@ -72,11 +72,7 @@ module Sendxmpp
         raise ArgumentError, "Jids needs to be an Array got #{jids.class}"
       end
 
-      if config.message.empty?
-        Log.logger.error("No message to send. Exiting.")
-        Log.logger.error("See https://github.com/nirnanaaa/sendxmpprb/wiki/Sending-messages for available message formats.")
-        exit 1
-      end
+      check_messagequeue
 
       Message.batch do
         jids.each do |jid|
@@ -104,11 +100,7 @@ module Sendxmpp
         raise ArgumentError, "Jids needs to be an Array got #{jids.class}"
       end
 
-      if config.message.empty?
-        Log.logger.error("No message to send. Exiting.")
-        Log.logger.error("See https://github.com/nirnanaaa/sendxmpprb/wiki/Sending-messages for available message formats.")
-        exit 1
-      end
+      check_messagequeue
 
       Message.batch do
         jids.each do |jid|
@@ -117,13 +109,66 @@ module Sendxmpp
       end
 
     end
+
+    desc "fromconf", "Read the receipients from configuration file"
+    # Public: Will read the receipients from configuration file and send the message to the users
+    #
+    def fromconf
+      Log.logger.debug("Received call for fromconf method")
+      fetch_stdin
+      check_messagequeue
+
+      users, muc = parse_receipients
+      Message.batch do 
+        users.each do |jid|
+          Message.message_to_user(jid)
+        end
+        muc.each do |jid|
+          Message.message_to_room(jid)
+        end
+      end
+
+    end
     no_commands do
+
+      # Public: Check for presence of a message. The message is needed, because otherwise
+      #         there would be nothing to do.
+      #
+      # Exits on failure
+      def check_messagequeue
+        if !config.message
+          Log.logger.error("No message to send. Exiting.")
+          Log.logger.error("See https://github.com/nirnanaaa/sendxmpprb/wiki/Sending-messages for available message formats.")
+          exit 1
+        end
+      end
+
+      # Public: read receipients from configuration
+      def parse_receipients
+        types = [[],[]]
+        config.receipients.split(",").each do |r|
+          type, jid = r.split("->")
+          type == "muc" ? types.last << jid : types.first << jid
+        end
+        types
+      end
+
+      # Public: Fetch stdin input
+      #
+      # Returns nothing
       def fetch_stdin
+        require 'fcntl'
+
         if !config.message
           Log.logger.info("messages empty. using stdin")
-          while $stdin.gets
-            config.message ||= ""
-            config.message << $_
+          if STDIN.fcntl(Fcntl::F_GETFL, 0) == 0
+            Log.logger.info("stdin not empty. Reading from it")
+            while $stdin.gets
+              config.message ||= ""
+              config.message << $_
+            end
+          else
+            return
           end
         end
       end
